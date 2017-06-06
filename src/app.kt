@@ -1,14 +1,15 @@
 import java.io.File;
+import com.fasterxml.jackson.module.kotlin.*
 
-data class JsonDir(
+data class DirJson(
         var name: String,
         var size: Long,
         var lastModified: Long,
-        var files: MutableList<JsonFile> = mutableListOf<JsonFile>(),
-        var directories: MutableList<JsonDir> = mutableListOf<JsonDir>()
+        var files: MutableList<FileJson> = mutableListOf<FileJson>(),
+        var directories: MutableList<DirJson> = mutableListOf<DirJson>()
 )
 
-data class JsonFile(
+data class FileJson(
         val name: String,
         val size: Long,
         val lastModified: Long
@@ -16,11 +17,11 @@ data class JsonFile(
 
 fun main(args: Array<String>) {
 
-    val file = File("C:\\Users\\Egidijus Lileika\\Desktop\\1\\");
+    val file = File(args[0]);
     val fileWalker = file.walk();
 
-    val root: JsonDir = JsonDir("", 0, 0);
-    var currentDir: JsonDir = root;
+    val root: DirJson = DirJson("", 0, 0);
+    var currentDir: DirJson = root;
 
     fileWalker.forEach {
         if(currentDir.name == "") {
@@ -29,13 +30,16 @@ fun main(args: Array<String>) {
             currentDir.lastModified = it.lastModified();
         }
         else if(it.isDirectory) {
-            currentDir.directories.add(JsonDir(it.name, it.length(), it.lastModified()));
+            currentDir.directories.add(DirJson(it.name, it.length(), it.lastModified()));
             currentDir = currentDir.directories.last();
         }
         else {
-            currentDir.files.add(JsonFile(it.name, it.length(), it.lastModified()));
+            currentDir.files.add(FileJson(it.name, it.length(), it.lastModified()));
         }
     }
 
-    println(root.toString());
+    val mapper = jacksonObjectMapper();
+    val json = mapper.writeValueAsString(root);
+
+    print(json);
 }
