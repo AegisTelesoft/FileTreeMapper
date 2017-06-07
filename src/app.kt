@@ -45,12 +45,6 @@ fun main(args: Array<String>) {
     // Craeting `data Class to Json` object mapper
     val mapper = jacksonObjectMapper();
 
-    /*
-    * Error:Kotlin: Supertypes of the following classes cannot be resolved. Please make sure you have the required
-    * dependencies in the classpath:class com.fasterxml.jackson.databind.ObjectMapper, unresolved supertypes:
-    * ObjectCodec, Versioned
-    */
-
     // Mapping `root` object to Json as a string (this operation fails to compile with error mentioned above)
     val json = mapper.writeValueAsString(root);
 
